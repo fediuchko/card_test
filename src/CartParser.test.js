@@ -13,37 +13,43 @@ beforeEach(() => {
 describe("CartParser - unit tests", () => {
     // Add your unit tests here.
 
-    const path = "./samples/cart.csv";
-    const contents = readFileSync(path, 'utf-8', 'r');
+  
     it('Should return array of errors is empty', () => {
+        const path = "./samples/cart.csv";
+        const contents = readFileSync(path, 'utf-8', 'r');
         expect(validate(contents)).toHaveLength(0)
     });
-    const notValidCellContent =
+   
+    it('should recive error with type  - ErrorType.CELL', () => {
+        const notValidCellContent =
         `Product name,Price,Quantity
                  ,18.90,1`;
-    it('should recive error with type  - ErrorType.CELL', () => {
         expect(validate(notValidCellContent)[0].type).toEqual(parser.ErrorType.CELL)
     });
 
-    const notValidHeaderContent = `Product name,     ,Quantity`;
+    
     it('should recive error with type  - ErrorType.HEADER', () => {
+        const notValidHeaderContent = `Product name,     ,Quantity`;
         expect(validate(notValidHeaderContent)[0].type).toEqual(parser.ErrorType.HEADER)
     });
 
-    const notValidRowContent = `Product name,Price,Quantity
-                            Mollis consequat,9.00`;
+   
     it('should recive error with type  - ErrorType.ROW ', () => {
+        const notValidRowContent = `Product name,Price,Quantity
+        Mollis consequat,9.00`;
         expect(validate(notValidRowContent)[0].type).toEqual(parser.ErrorType.ROW)
     });
 
-    const notValidQuantityContent = `Product name,Price,Quantity
-    Mollis consequat,9.00,-2`;
+   
     it('should recive error with type  - ErrorType.CELL', () => {
+        const notValidQuantityContent = `Product name,Price,Quantity
+        Mollis consequat,9.00,-2`;
         expect(validate(notValidQuantityContent)[0].type).toEqual(parser.ErrorType.CELL)
     });
 
-    const csvLine = 'Consectetur adipiscing,28.72,10';
+    
     it('should return  object with keys from column keys and values from CSV.', () => {
+        const csvLine = 'Consectetur adipiscing,28.72,10';
         expect(parser.parseLine(csvLine)).toBeDefined()
         expect(parser.parseLine(csvLine)['name']).toEqual("Consectetur adipiscing")
         expect(parser.parseLine(csvLine)['price']).toEqual(28.72)
